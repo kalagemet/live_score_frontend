@@ -26,8 +26,13 @@ class App extends Component {
 				prov: "",
 				sesi: "",
 			},
+			filterIndex: {
+				limit: 0,
+				prov: 0,
+				sesi: 0,
+			},
 			data: [],
-			totalData: 5,
+			totalData: 0,
 		};
 		this.onLoadFinish = this.onLoadFinish.bind(this);
 	}
@@ -39,12 +44,34 @@ class App extends Component {
 	loadData = async (load) => {
 		let loading = load || false;
 		if (loading) this.setState({ loading: loading });
+		await fetch("", {
+			method: "POST",
+			headers: {
+				Accept: "application/json",
+				ContentType: "application/json",
+			},
+			body: {
+				string: this.state.stringCari,
+				provinsi: this.state.filter.prov,
+				sesi: this.state.filter.sesi,
+			},
+		})
+			.then((response) => response.json())
+			.then((res) => {
+				console.log(res);
+				if (this.state.loading) this.setState({ loading: false });
+			})
+			.catch((e) => {
+				console.log(e);
+				this.setState({ loading: false });
+			});
 	};
 
 	componentDidMount() {
-		window.addEventListener("load", this.onLoadFinish);
-		window.addEventListener("scroll", this.headerOnScroll);
+		window.addEventListener("load", this.onLoadFinish());
+		window.addEventListener("scroll", this.headerOnScroll());
 		this.interval = setInterval(() => this.loadData(), INTERVAL_UPDATE_DATA);
+		this.loadData();
 	}
 
 	componentWillUnmount() {
@@ -98,46 +125,77 @@ class App extends Component {
 									<div className="filter">
 										<Cari
 											value={this.state.stringCari}
-											onChange={(value) => this.setState({ stringCari: value })}
+											onChange={(value) =>
+												this.setState({ stringCari: value }, () =>
+													this.loadData()
+												)
+											}
 										/>
 										<div className="dropdown">
 											<Filter
 												label="Menampilkan"
 												data={LIMIT_DATA}
+												activeIndex={this.state.filterIndex.limit}
 												onChange={(value) =>
-													this.setState({ limit: value.value })
+													this.setState(
+														{
+															filterIndex: {
+																...this.state.filterIndex,
+																limit: value.selectedIndex,
+															},
+															limit: value.value,
+														},
+														() => this.loadData(true)
+													)
 												}
 											/>
 											<Filter
 												label="Provinsi Peserta"
+												activeIndex={this.state.filterIndex.prov}
 												data={PROVINSI}
 												onChange={(value) =>
-													this.setState({
-														filter: {
-															prov: Number(value.value),
-															sesi: this.state.filter.sesi,
+													this.setState(
+														{
+															filterIndex: {
+																...this.state.filterIndex,
+																prov: value.selectedIndex,
+															},
+															filter: {
+																...this.state.filter,
+																prov: Number(value.value),
+															},
+															text: {
+																...this.state.text,
+																prov: value.value === "0" ? "0" : value.text,
+															},
 														},
-														text: {
-															prov: value.value === "0" ? "" : value.text,
-															sesi: this.state.text.sesi,
-														},
-													})
+														() => this.loadData(true)
+													)
 												}
 											/>
+											{console.log(this.state.filterIndex)}
 											<Filter
 												label="Sesi Ujian"
+												activeIndex={this.state.filterIndex.sesi}
 												data={SESI}
 												onChange={(value) =>
-													this.setState({
-														filter: {
-															sesi: Number(value.value),
-															prov: this.state.filter.prov,
+													this.setState(
+														{
+															filterIndex: {
+																...this.state.filterIndex,
+																sesi: value.selectedIndex,
+															},
+															filter: {
+																...this.state.filter,
+																sesi: value.value,
+															},
+															text: {
+																...this.state.text,
+																sesi: value.value === "0" ? "0" : value.text,
+															},
 														},
-														text: {
-															sesi: value.value === "0" ? "" : value.text,
-															prov: this.state.text.prov,
-														},
-													})
+														() => this.loadData(true)
+													)
 												}
 											/>
 										</div>
@@ -185,8 +243,12 @@ class App extends Component {
 								<div className="detail_data">
 									Menampilkan {(this.state.activePage - 1) * 25 + 1} -{" "}
 									{this.state.data.length} data dari {this.state.totalData} data
-									{this.state.filter.prov !== 0 || this.state.filter.sesi !== 0
+									{this.state.filter.prov !== 0 ||
+									this.state.filter.sesi !== 0 ||
+									this.state.stringCari !== ""
 										? " ( filter : " +
+										  this.state.stringCari +
+										  " " +
 										  this.state.text.prov +
 										  " " +
 										  this.state.text.sesi +

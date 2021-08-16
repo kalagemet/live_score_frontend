@@ -37,7 +37,11 @@ export const Filter = (props) => {
 					? ""
 					: props.data.map((d, i) => {
 							return (
-								<option key={i} value={d.value}>
+								<option
+									selected={i === props.activeIndex || 0}
+									key={i}
+									value={d.value}
+								>
 									{d.text}
 								</option>
 							);
