@@ -68,9 +68,9 @@ class App extends Component {
 	};
 
 	componentDidMount() {
-		window.addEventListener("load", this.onLoadFinish());
-		window.addEventListener("scroll", this.headerOnScroll());
-		this.interval = setInterval(() => this.loadData(), INTERVAL_UPDATE_DATA);
+		window.addEventListener("load", this.onLoadFinish);
+		window.addEventListener("scroll", this.headerOnScroll);
+		this.interval = setInterval(() => this.loadData, INTERVAL_UPDATE_DATA);
 		this.loadData();
 	}
 
@@ -135,14 +135,10 @@ class App extends Component {
 											<Filter
 												label="Menampilkan"
 												data={LIMIT_DATA}
-												activeIndex={this.state.filterIndex.limit}
+												value={this.state.limit}
 												onChange={(value) =>
 													this.setState(
 														{
-															filterIndex: {
-																...this.state.filterIndex,
-																limit: value.selectedIndex,
-															},
 															limit: value.value,
 														},
 														() => this.loadData(true)
@@ -151,15 +147,11 @@ class App extends Component {
 											/>
 											<Filter
 												label="Provinsi Peserta"
-												activeIndex={this.state.filterIndex.prov}
+												value={this.state.filter.prov}
 												data={PROVINSI}
 												onChange={(value) =>
 													this.setState(
 														{
-															filterIndex: {
-																...this.state.filterIndex,
-																prov: value.selectedIndex,
-															},
 															filter: {
 																...this.state.filter,
 																prov: Number(value.value),
@@ -173,18 +165,13 @@ class App extends Component {
 													)
 												}
 											/>
-											{console.log(this.state.filterIndex)}
 											<Filter
 												label="Sesi Ujian"
-												activeIndex={this.state.filterIndex.sesi}
+												value={this.state.filter.sesi}
 												data={SESI}
 												onChange={(value) =>
 													this.setState(
 														{
-															filterIndex: {
-																...this.state.filterIndex,
-																sesi: value.selectedIndex,
-															},
 															filter: {
 																...this.state.filter,
 																sesi: value.value,

@@ -29,6 +29,7 @@ export const Filter = (props) => {
 	return (
 		<div className="filter_select">
 			<select
+				value={props.value || ""}
 				onChange={(e) => onChange(e.target)}
 				id="select_limit"
 				className="select_limit"
@@ -37,11 +38,7 @@ export const Filter = (props) => {
 					? ""
 					: props.data.map((d, i) => {
 							return (
-								<option
-									selected={i === props.activeIndex || 0}
-									key={i}
-									value={d.value}
-								>
+								<option key={i} value={d.value}>
 									{d.text}
 								</option>
 							);
