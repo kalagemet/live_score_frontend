@@ -1,5 +1,5 @@
 [
-	{ "value": 0, "text": "Semua Sesi" },
+	{ "value": "0", "text": "Semua Sesi" },
 	{ "value": "1A", "text": "Senin 27 Agustus 2021 - Sesi 1" },
 	{ "value": "1B", "text": "Senin 27 Agustus 2021 - Sesi 2" },
 	{ "value": "1C", "text": "Senin 27 Agustus 2021 - Sesi 3" },

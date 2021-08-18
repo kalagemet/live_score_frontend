@@ -6,7 +6,7 @@ import { Cari, Filter, Loading, Pagination, Skeleton } from "./Component";
 const LIMIT_DATA = require("./JSON/LIMIT_DATA.json");
 const PROVINSI = require("./JSON/PROVINSI.json");
 const SESI = require("./JSON/SESI.json");
-const INTERVAL_UPDATE_DATA = 10000;
+const INTERVAL_UPDATE_DATA = 10000; //10 s load
 
 class App extends Component {
 	constructor(props) {
@@ -14,6 +14,7 @@ class App extends Component {
 		this.state = {
 			loading: true,
 			loadingApp: true,
+			loadData: true,
 			activePage: 1,
 			totalPage: 1,
 			stringCari: "",
@@ -42,9 +43,10 @@ class App extends Component {
 	}
 
 	loadData = async (load) => {
+		if (!this.state.loadData) this.setState({ loadData: true });
 		let loading = load || false;
 		if (loading) this.setState({ loading: loading });
-		await fetch("", {
+		await fetch("https://www.stpn.ac.id", {
 			method: "POST",
 			headers: {
 				Accept: "application/json",
@@ -59,18 +61,19 @@ class App extends Component {
 			.then((response) => response.json())
 			.then((res) => {
 				console.log(res);
-				if (this.state.loading) this.setState({ loading: false });
+				if (this.state.loading)
+					this.setState({ loading: false, loadData: false });
 			})
 			.catch((e) => {
 				console.log(e);
-				this.setState({ loading: false });
+				this.setState({ loading: false, loadData: false });
 			});
 	};
 
 	componentDidMount() {
 		window.addEventListener("load", this.onLoadFinish);
 		window.addEventListener("scroll", this.headerOnScroll);
-		this.interval = setInterval(() => this.loadData, INTERVAL_UPDATE_DATA);
+		this.interval = setInterval(() => this.loadData(), INTERVAL_UPDATE_DATA);
 		this.loadData();
 	}
 
@@ -117,6 +120,15 @@ class App extends Component {
 					{/* Content start */}
 					<div className="container" id="container">
 						<h1>DAFTAR NILAI PCT 2021</h1>
+						{this.state.loadingApp ? (
+							""
+						) : this.state.loading ? (
+							""
+						) : this.state.loadData ? (
+							<div className="onload"></div>
+						) : (
+							""
+						)}
 						<div className="wrapper">
 							{this.state.loading ? (
 								<Skeleton count={(this.state.limit / 25) * 11 + 3} />
@@ -126,8 +138,9 @@ class App extends Component {
 										<Cari
 											value={this.state.stringCari}
 											onChange={(value) =>
-												this.setState({ stringCari: value }, () =>
-													this.loadData()
+												this.setState(
+													{ stringCari: value, activePage: 1 },
+													() => this.loadData()
 												)
 											}
 										/>
@@ -160,6 +173,7 @@ class App extends Component {
 																...this.state.text,
 																prov: value.value === "0" ? "0" : value.text,
 															},
+															activePage: 1,
 														},
 														() => this.loadData(true)
 													)
@@ -180,6 +194,7 @@ class App extends Component {
 																...this.state.text,
 																sesi: value.value === "0" ? "0" : value.text,
 															},
+															activePage: 1,
 														},
 														() => this.loadData(true)
 													)

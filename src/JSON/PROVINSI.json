@@ -1,6 +1,6 @@
 [
 	{ "text": "Semua", "value": 0 },
-	{ "text": "Aceh (NAD)", "value": 11 },
+	{ "text": "Aceh", "value": 11 },
 	{ "text": "Bali", "value": 51 },
 	{ "text": "Banten", "value": 36 },
 	{ "text": "Bengkulu", "value": 17 },
@@ -21,8 +21,8 @@
 	{ "text": "Lampung", "value": 18 },
 	{ "text": "Maluku", "value": 81 },
 	{ "text": "Maluku Utara", "value": 82 },
-	{ "text": "Nusa Tenggara Barat (NTB)", "value": 52 },
-	{ "text": "Nusa Tenggara Timur (NTT)", "value": 53 },
+	{ "text": "Nusa Tenggara Barat", "value": 52 },
+	{ "text": "Nusa Tenggara Timur", "value": 53 },
 	{ "text": "Papua", "value": 91 },
 	{ "text": "Papua Barat", "value": 92 },
 	{ "text": "Riau", "value": 14 },
