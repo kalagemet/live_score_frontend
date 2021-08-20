@@ -2,16 +2,19 @@ import { Component } from "react";
 import "./Component.scss";
 import logoSTPN from "./logo192.png";
 import { Cari, Filter, Loading, Pagination, Skeleton } from "./Component";
+import axios from "axios";
 
 const LIMIT_DATA = require("./JSON/LIMIT_DATA.json");
-const PROVINSI = require("./JSON/PROVINSI.json");
-const SESI = require("./JSON/SESI.json");
+// const PROVINSI = require("./JSON/PROVINSI.json");
+// const SESI = require("./JSON/SESI.json");
 const INTERVAL_UPDATE_DATA = 10000; //10 s load
 
 class App extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
+			PROVINSI: [],
+			SESI: [],
 			loading: true,
 			loadingApp: true,
 			loadData: true,
@@ -40,29 +43,59 @@ class App extends Component {
 
 	onLoadFinish() {
 		this.setState({ loadingApp: false });
+		this.interval = setInterval(() => this.loadData(), INTERVAL_UPDATE_DATA);
+	}
+
+	dataQueryString(data = {}) {
+		return Object.entries(data)
+			.map(
+				([key, value]) =>
+					`${encodeURIComponent(key)}=${encodeURIComponent(value)}`
+			)
+			.join("&");
 	}
 
 	loadData = async (load) => {
 		if (!this.state.loadData) this.setState({ loadData: true });
 		let loading = load || false;
 		if (loading) this.setState({ loading: loading });
-		await fetch("https://www.stpn.ac.id", {
-			method: "POST",
-			headers: {
-				Accept: "application/json",
-				ContentType: "application/json",
-			},
-			body: {
-				string: this.state.stringCari,
-				provinsi: this.state.filter.prov,
-				sesi: this.state.filter.sesi,
-			},
-		})
-			.then((response) => response.json())
-			.then((res) => {
-				console.log(res);
-				if (this.state.loading)
-					this.setState({ loading: false, loadData: false });
+		let body = {
+			page: this.state.activePage,
+			limit: this.state.limit,
+			cari: this.state.stringCari,
+			id_daerah: this.state.filter.prov,
+			id_sesi: this.state.filter.sesi,
+		};
+		let headers = {
+			"Content-Type": "application/x-www-form-urlencoded",
+		};
+		await axios
+			.post(
+				"http://10.0.21.30/rest_score/index.php/score",
+				this.dataQueryString(body),
+				{ headers }
+			)
+			.then((response) => {
+				this.setState({
+					activePage: response.data.currentPage,
+					data: response.data.data,
+					totalData: response.data.totalItems,
+					totalPage: response.data.totalPages,
+					PROVINSI: response.data.prov,
+					SESI: response.data.sesi,
+				});
+				//set done
+				if (!Array.isArray(this.state.data)) {
+					this.setState({ data: [] });
+				}
+				if (!Array.isArray(this.state.SESI)) {
+					this.setState({ SESI: [] });
+				}
+				if (!Array.isArray(this.state.PROVINSI)) {
+					this.setState({ PROVINSI: [] });
+				}
+				if (this.state.loading) this.setState({ loading: false });
+				if (this.state.loadData) this.setState({ loadData: false });
 			})
 			.catch((e) => {
 				console.log(e);
@@ -73,7 +106,6 @@ class App extends Component {
 	componentDidMount() {
 		window.addEventListener("load", this.onLoadFinish);
 		window.addEventListener("scroll", this.headerOnScroll);
-		this.interval = setInterval(() => this.loadData(), INTERVAL_UPDATE_DATA);
 		this.loadData();
 	}
 
@@ -161,7 +193,7 @@ class App extends Component {
 											<Filter
 												label="Provinsi Peserta"
 												value={this.state.filter.prov}
-												data={PROVINSI}
+												data={this.state.PROVINSI}
 												onChange={(value) =>
 													this.setState(
 														{
@@ -182,7 +214,7 @@ class App extends Component {
 											<Filter
 												label="Sesi Ujian"
 												value={this.state.filter.sesi}
-												data={SESI}
+												data={this.state.SESI}
 												onChange={(value) =>
 													this.setState(
 														{
@@ -220,15 +252,21 @@ class App extends Component {
 												</tr>
 											</thead>
 											<tbody>
-												{[1, 2, 3, 3, 4, 54, 56, 6, 6, 6, 7].map((d, i) => {
+												{this.state.data.map((d, i) => {
 													return (
 														<tr key={i}>
-															<td className="no">{i + 1}.</td>
-															<td className="no">Hamid Musafa</td>
-															<td>12312312312123</td>
-															<td>Kalimantan Selatan</td>
-															<td>Senin, 27/08/21 - Sesi 3</td>
-															<td>200</td>
+															<td className="no">
+																{(this.state.activePage - 1) *
+																	this.state.limit +
+																	i +
+																	1}
+																.
+															</td>
+															<td className="no">{d.nama}</td>
+															<td>{d.nomor_pendaftaran}</td>
+															<td>{d.provinsi}</td>
+															<td>{d.sesi}</td>
+															<td>{d.score}</td>
 														</tr>
 													);
 												})}
@@ -243,19 +281,23 @@ class App extends Component {
 						) : (
 							<div>
 								<div className="detail_data">
-									Menampilkan {(this.state.activePage - 1) * 25 + 1} -{" "}
-									{this.state.data.length} data dari {this.state.totalData} data
+									Menampilkan{" "}
+									{(this.state.activePage - 1) * this.state.limit + 1} -{" "}
+									{this.state.data.length +
+										(this.state.activePage - 1) * this.state.limit}{" "}
+									data dari {this.state.totalData} data
 									{this.state.filter.prov !== 0 ||
 									this.state.filter.sesi !== 0 ||
 									this.state.stringCari !== ""
 										? " ( filter : " +
 										  this.state.stringCari +
 										  " " +
-										  this.state.text.prov +
+										  (this.state.text.prov === 0 ? "" : this.state.text.prov) +
 										  " " +
-										  this.state.text.sesi +
+										  (this.state.text.sesi === 0 ? "" : this.state.text.sesi) +
 										  " )"
 										: ""}
+									{console.log(this.state.filter)}
 								</div>
 								<div className="bootom_page">
 									<Pagination
