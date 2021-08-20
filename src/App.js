@@ -1,4 +1,4 @@
-import { Component } from "react";
+import React, { Component } from "react";
 import "./Component.scss";
 import logoSTPN from "./logo192.png";
 import { Cari, Filter, Loading, Pagination, Skeleton } from "./Component";
@@ -39,6 +39,7 @@ class App extends Component {
 			totalData: 0,
 		};
 		this.onLoadFinish = this.onLoadFinish.bind(this);
+		this.tableRef = React.createRef();
 	}
 
 	onLoadFinish() {
@@ -58,7 +59,10 @@ class App extends Component {
 	loadData = async (load) => {
 		if (!this.state.loadData) this.setState({ loadData: true });
 		let loading = load || false;
-		if (loading) this.setState({ loading: loading });
+		if (loading) {
+			this.setState({ loading: loading });
+			this.tableRef.current.scrollIntoView({ behavior: "smooth" });
+		}
 		let body = {
 			page: this.state.activePage,
 			limit: this.state.limit,
@@ -151,7 +155,7 @@ class App extends Component {
 					</div>
 					{/* Content start */}
 					<div className="container" id="container">
-						<h1>DAFTAR NILAI PCT 2021</h1>
+						<h1 ref={this.tableRef}>DAFTAR NILAI PCT 2021</h1>
 						{this.state.loadingApp ? (
 							""
 						) : this.state.loading ? (
@@ -286,18 +290,6 @@ class App extends Component {
 									{this.state.data.length +
 										(this.state.activePage - 1) * this.state.limit}{" "}
 									data dari {this.state.totalData} data
-									{this.state.filter.prov !== 0 ||
-									this.state.filter.sesi !== 0 ||
-									this.state.stringCari !== ""
-										? " ( filter : " +
-										  this.state.stringCari +
-										  " " +
-										  (this.state.text.prov === 0 ? "" : this.state.text.prov) +
-										  " " +
-										  (this.state.text.sesi === 0 ? "" : this.state.text.sesi) +
-										  " )"
-										: ""}
-									{console.log(this.state.filter)}
 								</div>
 								<div className="bootom_page">
 									<Pagination
