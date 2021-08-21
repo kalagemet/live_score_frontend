@@ -3,6 +3,7 @@ import "./Component.scss";
 import logoSTPN from "./logo192.png";
 import { Cari, Filter, Loading, Pagination, Skeleton } from "./Component";
 import axios from "axios";
+import { animateScroll } from "react-scroll";
 
 const LIMIT_DATA = require("./JSON/LIMIT_DATA.json");
 // const PROVINSI = require("./JSON/PROVINSI.json");
@@ -61,7 +62,11 @@ class App extends Component {
 		let loading = load || false;
 		if (loading) {
 			this.setState({ loading: loading });
-			this.tableRef.current.scrollIntoView({ behavior: "smooth" });
+			animateScroll.scrollToTop({
+				duration: 800,
+				delay: 0,
+				smooth: "easeInOutQuart",
+			});
 		}
 		let body = {
 			page: this.state.activePage,
