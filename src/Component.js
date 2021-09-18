@@ -5,6 +5,11 @@ export const Cari = (props) => {
 	return (
 		<div className="search">
 			<input
+				onKeyPress={(e) => {
+					if (e.key === "Enter") {
+						props.enter();
+					}
+				}}
 				onChange={(e) => onChange(e.target.value)}
 				value={props.value === undefined ? null : props.value}
 				name="search"

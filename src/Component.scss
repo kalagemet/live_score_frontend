@@ -61,7 +61,7 @@ body {
 	transition: background-color 1s linear, border-color 1s, border-width 500ms;
 }
 .header .logo {
-	width: 60px;
+	width: 70px;
 	height: 100%;
 	margin-left: 20px;
 	transition: width 1s, height 1s;
@@ -70,7 +70,7 @@ body {
 	width: 100%;
 	margin: 10px 0 0 20px;
 	padding: 0px;
-	font-size: larger;
+	font-size: x-large;
 	font-weight: bolder;
 	color: $secondary;
 	-webkit-transition: color 1s linear, font-size 1s;
@@ -86,7 +86,7 @@ body {
 	display: none;
 	width: 100%;
 	color: white;
-	font-size: small;
+	font-size: medium;
 	text-align: right;
 	padding: 10px 30px 0px 0px;
 }
@@ -98,13 +98,13 @@ body {
 	border-bottom: solid $secondary 5px;
 }
 .header.scroll .logo {
-	width: 35px;
+	width: 40px;
 	height: 100%;
 }
 .header.scroll .title {
 	margin: 0 0 0 10px;
 	padding: 0px;
-	font-size: medium;
+	font-size: large;
 	font-weight: normal;
 	color: white;
 }
@@ -145,7 +145,7 @@ body {
 	h1 {
 		flex: 1;
 		margin: 180px 0 0 0;
-		font-size: medium;
+		font-size: x-large;
 		font-weight: bolder;
 		color: $font;
 	}
@@ -155,6 +155,20 @@ body {
 	padding-top: 20px;
 	display: flex;
 	min-width: 50rem;
+}
+
+.apply-button {
+	width: 100px;
+	height: 40px;
+	margin: 15px 0 15px 15px;
+	cursor: pointer;
+	border: solid 1px $secondary;
+	color: $secondary;
+	&:hover {
+		background-color: $secondary;
+		color: white;
+	}
+	border-radius: 4px;
 }
 
 //table
@@ -175,7 +189,7 @@ body {
 		min-width: 50rem !important;
 		border-collapse: collapse;
 		margin: 0;
-		font-size: 0.9em;
+		font-size: 1.1em;
 		min-width: 400px;
 		box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
 	}
@@ -220,7 +234,7 @@ body {
 		text-align: left;
 		input {
 			color: $font;
-			font-size: medium;
+			font-size: large;
 			padding: 5px 0;
 			border: 0;
 			border-bottom: 2px solid $secondary;
@@ -243,7 +257,7 @@ body {
 			top: 0;
 			display: block;
 			transition: 0.2s;
-			font-size: small;
+			font-size: large;
 			color: gray;
 		}
 
@@ -274,50 +288,53 @@ body {
 }
 
 // dropdown
-.wrapper {
-	.dropdown {
-		text-align: right;
-		flex: 2;
-		display: flex;
-		position: relative;
+// .wrapper {
+.dropdown {
+	text-align: right;
+	flex: 2;
+	display: flex;
+	position: relative;
+}
+.filter_select {
+	max-width: 251px;
+	padding-left: 10px !important;
+	flex: 1;
+	position: relative;
+	padding: 15px 0 0 0;
+	margin-top: 10px;
+	width: 50%;
+	margin: 10px 0;
+	text-align: left;
+	select {
+		width: 100%;
+		color: $font;
+		font-size: large;
+		padding: 5px 0;
+		border: 0;
+		border-bottom: 2px solid $secondary;
+		outline: 0;
+		background: transparent;
+		transition: border-color 0.2s;
 	}
-	.filter_select {
-		padding-left: 10px !important;
-		flex: 1;
-		position: relative;
-		padding: 15px 0 0 0;
-		margin-top: 10px;
-		width: 50%;
-		margin: 10px 0;
-		text-align: left;
-		select {
-			width: 100%;
-			color: $font;
-			font-size: medium;
-			padding: 5px 0;
-			border: 0;
-			border-bottom: 2px solid $secondary;
-			outline: 0;
-			background: transparent;
-			transition: border-color 0.2s;
-		}
-		label {
-			position: absolute;
-			top: 0;
-			display: block;
-			transition: 0.2s;
-			font-size: small;
-			color: $secondary;
-			font-weight: bold;
-		}
+	label {
+		position: absolute;
+		top: 0;
+		display: block;
+		transition: 0.2s;
+		font-size: small;
+		color: $secondary;
+		font-weight: bold;
 	}
 }
+// }
 
 .detail_data {
 	flex: 1;
 	padding-top: 30px;
 	color: $secondary;
 	font-style: italic;
+}
+.footer-table {
 }
 
 //pagination
@@ -420,9 +437,9 @@ body {
 .noData {
 	overflow-y: scroll;
 	width: 47.5rem;
-	padding: 150px 20px;
+	padding: 30px 20px;
 	border-radius: 10px;
-	background-color: rgb(224, 224, 224);
+	// background-color: rgb(224, 224, 224);
 	color: $font;
 	font-weight: bold;
 	p {
@@ -478,13 +495,14 @@ body {
 
 //skeleton
 .skeleton {
-	width: 90%;
-	max-width: 47.5rem;
+	// width: 90%;
+	// max-width: 47.5rem;
+	min-width: 50rem;
 	height: 100%;
 	display: flex;
 	flex-direction: column;
 	align-items: center;
-	margin: 50px 0;
+	margin: 10px 0;
 	span {
 		display: block;
 		border-radius: 5px;
