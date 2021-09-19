@@ -49,7 +49,8 @@
 		.styled-table_ba {
 			width: 100%;
 			margin: 0;
-			font-size: 1.1vw;
+			font-size: 1vw;
+			white-space: nowrap;
 			border-collapse: collapse;
 			page-break-inside: auto;
 			tr {

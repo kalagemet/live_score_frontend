@@ -34,9 +34,7 @@ export default class Excel extends Component {
 						<ExcelColumn label="Provinsi" value="provinsi" />
 						<ExcelColumn
 							label="Program Studi"
-							value={(col) =>
-								col.sesi.substring(0, 3) === "DIV" ? "D-IV MP" : "D-I PPK"
-							}
+							value={(col) => (col.prodi === "02" ? "D-IV MP" : "D-I PPK")}
 						/>
 						<ExcelColumn
 							label="Mulai"
@@ -68,11 +66,12 @@ export default class Excel extends Component {
 							label="Jenis Kelamin"
 							value={(col) => (col.is_lk === "1" ? "Laki-Laki" : "Perempuan")}
 						/>
+						<ExcelColumn label="Provinsi" value="provinsi" />
 						<ExcelColumn
 							label="Sesi"
 							value={(col) =>
 								col.sesi
-									.substring(0, col.sesi.length - 18)
+									.substring(0, col.sesi.length - 25)
 									.replace("DI", "")
 									.replace("DIV", "")
 									.replace("Pendopo", "")

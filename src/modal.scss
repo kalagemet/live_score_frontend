@@ -1,0 +1,61 @@
+.backdrop_overview {
+	z-index: 11111111;
+	position: fixed;
+	top: 0;
+	padding: 40px 0px;
+	width: 100vw;
+	height: 100vh;
+	background-color: rgba(0, 0, 0, 0.767);
+}
+.modal_overview {
+	display: block;
+	background-color: #fff;
+	border-radius: 5px;
+	max-width: 90vw;
+	margin: 0 auto;
+	padding: 30px;
+	text-align: center;
+	h1 {
+		font-size: large;
+	}
+}
+
+.content_overview {
+	overflow: scroll;
+	display: block;
+	text-align: -webkit-center;
+	height: 80vh;
+	overflow-x: auto;
+	white-space: nowrap;
+	.styled-table {
+		max-width: 90vw;
+		thead {
+		}
+		tbody {
+			max-height: 70vh;
+		}
+	}
+}
+.footer_overview {
+	margin-top: 20px;
+	text-align: right;
+	button {
+		background-color: gray;
+		border-radius: 5px;
+		height: 30px;
+		width: 70px;
+		color: white;
+		cursor: pointer;
+		border-width: 0;
+	}
+}
+
+.triger_overview {
+	button {
+		cursor: pointer;
+		color: orange;
+		border-color: transparent;
+		width: 100px;
+		height: 40px;
+	}
+}

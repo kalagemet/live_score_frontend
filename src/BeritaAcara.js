@@ -60,10 +60,15 @@ export default class Berita extends Component {
 										<td>Provinsi</td>
 										<td>:</td>
 										<td>
-											{this.props.header.substring(
-												11,
-												this.props.header.length - 6
-											)}
+											{this.props.header === " Semua Provinsi (D-I)" ||
+											this.props.header === " Semua Provinsi (D-IV)"
+												? this.props.header
+														.replace("(D-I)", "")
+														.replace("(D-IV)", "")
+												: this.props.header.substring(
+														11,
+														this.props.header.length - 6
+												  )}
 										</td>
 									</tr>
 									<tr>
@@ -153,11 +158,7 @@ export default class Berita extends Component {
 												<td>{d.nomor_ujian}</td>
 												<td>{d.is_lk === "1" ? "Laki-Laki" : "Perempuan"}</td>
 												<td>{d.provinsi}</td>
-												<td>
-													{d.sesi.substring(0, 3) === "DIV"
-														? "D-IV MP"
-														: "D-I PPK"}
-												</td>
+												<td>{d.prodi === "02" ? "D-IV MP" : "D-I PPK"}</td>
 												<td>{d.mulai.substring(10, d.mulai.length)}</td>
 												<td>{d.selesai.substring(10, d.selesai.length)}</td>
 												<td>{d.submit === "Finished" ? d.waktu : "-"}</td>
@@ -181,7 +182,7 @@ export default class Berita extends Component {
 												<td>{d.is_lk === "1" ? "Laki-Laki" : "Perempuan"}</td>
 												<td className="no">
 													{d.sesi
-														.substring(0, d.sesi.length - 18)
+														.substring(0, d.sesi.length - 25)
 														.replace("DI", "")
 														.replace("DIV", "")
 														.replace("Pendopo", "")

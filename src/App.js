@@ -7,6 +7,7 @@ import { animateScroll } from "react-scroll";
 import ReactToPrint, { PrintContextConsumer } from "react-to-print";
 import Berita from "./BeritaAcara";
 import Excel from "./Excel";
+import Overview from "./Modal";
 
 const INTERVAL_UPDATE_DATA = 60000 * 15; //60 s load
 
@@ -14,6 +15,7 @@ class App extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
+			modal: false,
 			sortJK: false,
 			sortNL: true,
 			waitLoad: true,
@@ -127,7 +129,12 @@ class App extends Component {
 							  });
 					} else {
 						this.state.filter.prov === 0
-							? this.setState({ headers: "" })
+							? this.setState({
+									header:
+										this.state.activeFilter === 0
+											? " Semua Provinsi (D-I)"
+											: " Semua Provinsi (D-IV)",
+							  })
 							: this.setState({
 									header:
 										" - PROVINSI " +
@@ -217,7 +224,11 @@ class App extends Component {
 					ref={this.pageRef}
 					data={this.state.data}
 				/>
-
+				<Overview
+					id={this.state.filter.prov}
+					onclose={() => this.setState({ modal: false })}
+					open={this.state.modal}
+				/>
 				<Loading active={this.state.loadingApp} />
 				<div className="header" id="header">
 					<ReactToPrint
@@ -255,25 +266,28 @@ class App extends Component {
 					<div className="container" id="container">
 						<h1 ref={this.tableRef}>
 							DAFTAR NILAI PCT 2021
-							{this.state.header
-								.replace(
-									this.state.header.substring(
-										this.state.header.indexOf("("),
-										this.state.header.length
-									),
-									""
-								)
-								.replace(
-									this.state.header.substring(
-										this.state.header.indexOf(","),
-										this.state.header.indexOf("|") - 1
-									),
-									""
-								)
-								.replace("-", "")
-								.replace("DI", "D-I")
-								.replace("DIV", "D-IV")
-								.toUpperCase()}
+							{this.state.header === " Semua Provinsi (D-I)" ||
+							this.state.header === " Semua Provinsi (D-IV)"
+								? " " + this.state.header.toUpperCase()
+								: this.state.header
+										.replace(
+											this.state.header.substring(
+												this.state.header.indexOf("("),
+												this.state.header.length
+											),
+											""
+										)
+										.replace(
+											this.state.header.substring(
+												this.state.header.indexOf(","),
+												this.state.header.indexOf("|") - 1
+											),
+											""
+										)
+										.replace("-", "")
+										.replace("DI", "D-I")
+										.replace("DIV", "D-IV")
+										.toUpperCase()}
 						</h1>
 						{this.state.loadingApp ? (
 							""
@@ -323,6 +337,7 @@ class App extends Component {
 													activeFilter: Number(value.value),
 													text: "",
 													limit: 25,
+													activePage: 1,
 												})
 											}
 										/>
@@ -415,7 +430,7 @@ class App extends Component {
 															<td className="no">{d.nama}</td>
 															<td>{d.nomor_ujian}</td>
 															<td>{d.provinsi}</td>
-															<td>
+															{/* <td>
 																{this.state.header.substring(3, 11) ===
 																"PROVINSI"
 																	? d.sesi
@@ -430,6 +445,9 @@ class App extends Component {
 																	: d.sesi.substring(0, 3) === "DIV"
 																	? "D-IV MP"
 																	: "D-I PPK"}
+															</td> */}
+															<td>
+																{d.prodi === "02" ? "D-IV MP" : "D-I PPK"}
 															</td>
 															<td>{d.score}</td>
 														</tr>
@@ -521,6 +539,16 @@ class App extends Component {
 							</div>
 						)}
 					</div>
+					{this.state.activeFilter === 0 || this.state.activeFilter === 1 ? (
+						<div className="triger_overview">
+							<button
+								disabled={this.state.modal}
+								onClick={() => this.setState({ modal: true })}
+							>
+								Detail
+							</button>
+						</div>
+					) : null}
 					{/* Content end */}
 				</div>
 				<div className="footer">
