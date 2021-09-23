@@ -27,6 +27,7 @@ export default class Excel extends Component {
 					<ExcelSheet data={this.props.data} name={this.props.header}>
 						<ExcelColumn label="Nama Peserta" value="nama" />
 						<ExcelColumn label="Nomor Ujian" value="nomor_ujian" />
+						<ExcelColumn label="Taggal Lahir" value="tgl_lahir" />
 						<ExcelColumn
 							label="Jenis Kelamin"
 							value={(col) => (col.is_lk === "1" ? "Laki-Laki" : "Perempuan")}
@@ -34,7 +35,9 @@ export default class Excel extends Component {
 						<ExcelColumn label="Provinsi" value="provinsi" />
 						<ExcelColumn
 							label="Program Studi"
-							value={(col) => (col.prodi === "02" ? "D-IV MP" : "D-I PPK")}
+							value={(col) =>
+								col.prodi === "02" ? "D-IV Pertanahan" : "D-I PPK"
+							}
 						/>
 						<ExcelColumn
 							label="Mulai"
@@ -62,6 +65,7 @@ export default class Excel extends Component {
 					<ExcelSheet data={this.props.data} name={this.props.header}>
 						<ExcelColumn label="Nama Peserta" value="nama" />
 						<ExcelColumn label="Nomor Ujian" value="nomor_ujian" />
+						<ExcelColumn label="Taggal Lahir" value="tgl_lahir" />
 						<ExcelColumn
 							label="Jenis Kelamin"
 							value={(col) => (col.is_lk === "1" ? "Laki-Laki" : "Perempuan")}

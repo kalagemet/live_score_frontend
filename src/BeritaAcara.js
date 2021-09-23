@@ -135,6 +135,7 @@ export default class Berita extends Component {
 								<th>Nama Peserta</th>
 								<th>No. Ujian</th>
 								<th>Jenis Kelamin</th>
+								<th>Provinsi</th>
 								<th>Sesi</th>
 								<th>Lokasi Ujian</th>
 								<th>Waktu mulai</th>
@@ -158,7 +159,9 @@ export default class Berita extends Component {
 												<td>{d.nomor_ujian}</td>
 												<td>{d.is_lk === "1" ? "Laki-Laki" : "Perempuan"}</td>
 												<td>{d.provinsi}</td>
-												<td>{d.prodi === "02" ? "D-IV MP" : "D-I PPK"}</td>
+												<td>
+													{d.prodi === "02" ? "D-IV Pertanahan" : "D-I PPK"}
+												</td>
 												<td>{d.mulai.substring(10, d.mulai.length)}</td>
 												<td>{d.selesai.substring(10, d.selesai.length)}</td>
 												<td>{d.submit === "Finished" ? d.waktu : "-"}</td>
@@ -180,6 +183,7 @@ export default class Berita extends Component {
 												<td className="no">{d.nama}</td>
 												<td>{d.nomor_ujian}</td>
 												<td>{d.is_lk === "1" ? "Laki-Laki" : "Perempuan"}</td>
+												<td>{d.provinsi}</td>
 												<td className="no">
 													{d.sesi
 														.substring(0, d.sesi.length - 25)

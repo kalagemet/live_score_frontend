@@ -24,7 +24,7 @@
 	overflow: scroll;
 	display: block;
 	text-align: -webkit-center;
-	height: 80vh;
+	height: 60vh;
 	overflow-x: auto;
 	white-space: nowrap;
 	.styled-table {
@@ -37,7 +37,7 @@
 	}
 }
 .footer_overview {
-	margin-top: 20px;
+	margin: 20px auto;
 	text-align: right;
 	button {
 		background-color: gray;
@@ -52,6 +52,7 @@
 
 .triger_overview {
 	button {
+		margin: 20px;
 		cursor: pointer;
 		color: orange;
 		border-color: transparent;

@@ -8,6 +8,7 @@ import ReactToPrint, { PrintContextConsumer } from "react-to-print";
 import Berita from "./BeritaAcara";
 import Excel from "./Excel";
 import Overview from "./Modal";
+import md5 from "md5";
 
 const INTERVAL_UPDATE_DATA = 60000 * 15; //60 s load
 
@@ -15,6 +16,9 @@ class App extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
+			sortProp: false,
+			sortLulus: false,
+			sortCadangan: false,
 			modal: false,
 			sortJK: false,
 			sortNL: true,
@@ -71,11 +75,25 @@ class App extends Component {
 				});
 			}
 			let body = {
-				key: "6rw3xm49",
+				key: "",
 				page: this.state.activePage,
 				limit: this.state.limit,
 				sort_jk: this.state.sortJK ? 1 : 0,
 				sort_nl: this.state.sortNL ? 1 : 0,
+				sort_lulus:
+					this.state.sortLulus && this.state.sortCadangan
+						? 1
+						: this.state.sortLulus
+						? 2
+						: this.state.sortCadangan
+						? 3
+						: 0,
+				sort_prov:
+					this.state.sortProp &&
+					this.state.filter.prov === 0 &&
+					this.state.activeFilter !== 2
+						? 1
+						: 0,
 				cari: this.state.stringCari,
 				id_daerah: this.state.activeFilter === 2 ? "0" : this.state.filter.prov,
 				id_sesi: this.state.activeFilter === 2 ? this.state.filter.sesi : "0",
@@ -86,6 +104,18 @@ class App extends Component {
 						? "02"
 						: "0",
 			};
+			body.key = md5(
+				body.cari.toString() +
+					body.id_daerah.toString() +
+					body.id_sesi.toString() +
+					body.id_prodi.toString() +
+					body.page.toString() +
+					body.sort_jk.toString() +
+					body.sort_nl.toString() +
+					body.sort_prov.toString() +
+					body.sort_lulus.toString() +
+					"6rw3xm49"
+			);
 			let headers = {
 				"Content-Type": "application/x-www-form-urlencoded",
 			};
@@ -338,6 +368,8 @@ class App extends Component {
 													text: "",
 													limit: 25,
 													activePage: 1,
+													sortJK: false,
+													sortProp: false,
 												})
 											}
 										/>
@@ -367,6 +399,8 @@ class App extends Component {
 															limit: 25,
 															text: value.text,
 															activePage: 1,
+															sortJK: false,
+															sortProp: false,
 													  })
 													: this.setState({
 															filter: {
@@ -376,6 +410,8 @@ class App extends Component {
 															limit: 25,
 															text: value.text,
 															activePage: 1,
+															sortProp: false,
+															sortJK: false,
 													  })
 											}
 										/>
@@ -395,21 +431,23 @@ class App extends Component {
 										<thead>
 											<tr>
 												<th>No.</th>
-												<th>Nama Lengkap</th>
+												<th>Nama Peserta</th>
 												<th>No. Ujian</th>
-												<th>Prov</th>
+												<th>Jenis Kelamin</th>
+												<th>Provinsi</th>
 												<th>
 													{this.state.header.substring(3, 11) === "PROVINSI"
 														? "Sesi"
 														: "Program Studi"}
 												</th>
+												<th>Waktu</th>
 												<th>Nilai</th>
 											</tr>
 										</thead>
 										<tbody>
 											{this.state.data.length === 0 ? (
 												<tr>
-													<td colSpan="6">
+													<td colSpan="7">
 														<div className="noData">
 															Tidak ada data yang dapat ditampilkan
 															<p>Terapkan atau priksa filter yang digunakan</p>
@@ -429,26 +467,27 @@ class App extends Component {
 															</td>
 															<td className="no">{d.nama}</td>
 															<td>{d.nomor_ujian}</td>
+															<td>
+																{d.is_lk === "1" ? "Laki-Laki" : "Perempuan"}
+															</td>
 															<td>{d.provinsi}</td>
-															{/* <td>
+															<td>
 																{this.state.header.substring(3, 11) ===
 																"PROVINSI"
 																	? d.sesi
-																			.replace(
-																				d.sesi.substring(
-																					d.sesi.indexOf("|") + 8,
-																					d.sesi.length
-																				),
-																				""
-																			)
-																			.replace("DI -", "")
-																	: d.sesi.substring(0, 3) === "DIV"
-																	? "D-IV MP"
+																			.replace("DI - ", "")
+																			.replace("DIV - ", "")
+																			.replace(" - Pendopo ", "")
+																			.replace(" - Aula ", "")
+																			.replace("(14.30 s/d 16.00)", "")
+																			.replace("(15.30 s/d 17.00)", "")
+																			.replace("(08.30 s/d 10.00)", "")
+																			.replace(" September ", "/09/")
+																	: d.prodi === "02"
+																	? "D-IV Pertanahan"
 																	: "D-I PPK"}
-															</td> */}
-															<td>
-																{d.prodi === "02" ? "D-IV MP" : "D-I PPK"}
 															</td>
+															<td>{d.waktu}</td>
 															<td>{d.score}</td>
 														</tr>
 													);
@@ -486,30 +525,81 @@ class App extends Component {
 												)
 											}
 										/>
+										<div>
+											<input
+												type="checkbox"
+												id="sort_nilai"
+												checked={this.state.sortNL}
+												onChange={(e) =>
+													this.setState({ sortNL: e.target.checked }, () =>
+														this.loadData(true)
+													)
+												}
+											></input>
+											<label htmlFor="sort_nilai">Sortir berdasar Nilai</label>
+										</div>
+										<div>
+											<input
+												disabled={!this.state.sortNL}
+												type="checkbox"
+												id="sort_jk"
+												checked={this.state.sortJK}
+												onChange={(e) =>
+													this.setState({ sortJK: e.target.checked }, () =>
+														this.loadData(true)
+													)
+												}
+											></input>
+											<label htmlFor="sort_jk">Pisah Jenis Kelamin</label>
+										</div>
+										<div>
+											<input
+												disabled={
+													this.state.activeFilter === 2 ||
+													this.state.filter.prov !== 0
+												}
+												type="checkbox"
+												id="sort_prov"
+												checked={this.state.sortProp}
+												onChange={(e) =>
+													this.setState({ sortProp: e.target.checked }, () =>
+														this.loadData(true)
+													)
+												}
+											></input>
+											<label htmlFor="sort_prov">Sortir per Provinsi</label>
+										</div>
+									</div>
+								)}
+								{this.state.loading ? (
+									""
+								) : (
+									<div style={{ textAlign: "left" }}>
 										<input
 											type="checkbox"
-											id="sort_nilai"
-											checked={this.state.sortNL}
+											id="sort_lulus"
+											checked={this.state.sortLulus}
 											onChange={(e) =>
-												this.setState({ sortNL: e.target.checked }, () =>
+												this.setState({ sortLulus: e.target.checked }, () =>
 													this.loadData(true)
 												)
 											}
 										></input>
-										<label htmlFor="sort_jk">Sortir berdasar Nilai</label>
+										<label htmlFor="sort_lulus">Tampilkan hanya yg lulus</label>
 										<br />
 										<input
-											disabled={!this.state.sortNL}
 											type="checkbox"
-											id="sort_jk"
-											checked={this.state.sortJK}
+											id="sort_cdg"
+											checked={this.state.sortCadangan}
 											onChange={(e) =>
-												this.setState({ sortJK: e.target.checked }, () =>
+												this.setState({ sortCadangan: e.target.checked }, () =>
 													this.loadData(true)
 												)
 											}
 										></input>
-										<label htmlFor="sort_jk">Pisah Jenis Kelamin</label>
+										<label htmlFor="sort_cdg">
+											Tampilkan hanya yg lulus cadangan
+										</label>
 									</div>
 								)}
 							</div>
