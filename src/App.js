@@ -432,7 +432,7 @@ class App extends Component {
 											<tr>
 												<th>No.</th>
 												<th>Nama Peserta</th>
-												<th>No. Ujian</th>
+												<th>No. Pendaftaran</th>
 												<th>Jenis Kelamin</th>
 												<th>Provinsi</th>
 												<th>
@@ -466,7 +466,7 @@ class App extends Component {
 																.
 															</td>
 															<td className="no">{d.nama}</td>
-															<td>{d.nomor_ujian}</td>
+															<td>{d.nomor_daftar}</td>
 															<td>
 																{d.is_lk === "1" ? "Laki-Laki" : "Perempuan"}
 															</td>
@@ -487,7 +487,7 @@ class App extends Component {
 																	? "D-IV Pertanahan"
 																	: "D-I PPK"}
 															</td>
-															<td>{d.waktu}</td>
+															<td>{d.tgl_lahir}</td>
 															<td>{d.score}</td>
 														</tr>
 													);
